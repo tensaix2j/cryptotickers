@@ -19,7 +19,7 @@ proc get_from_bitstamp { } {
 		
 		puts "Bitstamp returned |$responseData|"
 		set json [ ::json::json2dict $responseData ]
-		set ::rate(last,BTCUSD) [ dict get $json last ]
+		set ::rate_buffer(last,BTCUSD) [ dict get $json last ]
 
 	} err ] } {
 		puts "Error $err."
@@ -43,7 +43,7 @@ proc get_from_bittrex { } {
 			BCCBTC \
 			 ] { 
 
-		if { ![ info exists ::rate(last,$pair) ] } {
+		if { ![ info exists ::rate_buffer(last,$pair) ] } {
 			if { [ catch {
 				
 					set pair_len 	[ string length $pair ]
@@ -56,7 +56,7 @@ proc get_from_bittrex { } {
 					
 					puts "Bittrex returned |$responseData|"
 					set json [ ::json::json2dict $responseData ]
-					set ::rate(last,$pair) [ dict get [ dict get $json result ] Last ]
+					set ::rate_buffer(last,$pair) [ dict get [ dict get $json result ] Last ]
 
 
 			} err ] } {
@@ -81,7 +81,7 @@ proc get_from_binance { } {
 		
 			set pair  [ dict get $pairitem symbol ]
 			set price [ dict get $pairitem price ]
-			set ::rate(last,$pair) $price
+			set ::rate_buffer(last,$pair) $price
 		}	
 
 	} err ] } {
@@ -103,7 +103,7 @@ proc get_from_hitbtc { } {
 		set json [ ::json::json2dict $responseData ]
 		foreach pair [ dict keys $json ] {
 			set price [ dict get [ dict get $json $pair ] last ]
-			set ::rate(last,$pair) $price
+			set ::rate_buffer(last,$pair) $price
 		}	
 
 	} err ] } {
@@ -114,19 +114,22 @@ proc get_from_hitbtc { } {
 
 #------------------------
 array set ::rate {}
+array set ::rate_buffer {}
 proc get_rate { } {
 
 	puts "get_rate"
 
-	array unset ::rate *
+	array unset ::rate_buffer *
 	get_from_hitbtc 
 	get_from_binance
 	get_from_bittrex
 
-	set ::rate(updated) [ clock seconds ]
+	set ::rate_buffer(updated) [ clock seconds ]
 	
-	parray ::rate
-	puts "get_rate completed $::rate(updated). \n\n\n"
+	puts "get_rate completed $::rate_buffer(updated). \n\n\n"
+
+	array set ::rate [ array get ::rate_buffer ]
+	array unset ::rate_buffer *
 }
 
 
