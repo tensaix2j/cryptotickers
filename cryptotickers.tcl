@@ -50,7 +50,7 @@ proc response { sock } {
 		set price_in_usd 0.00
 		set price_in_eth 0.00000000
 		
-		if { $curr == "BTC" } {
+		if { $curr == "BTC" && [ info exists ::rate(last,BTCUSDT) ] } {
 
 			set price_in_btc  1.0
 			set price_in_usd  $::rate(last,BTCUSDT)

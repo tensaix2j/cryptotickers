@@ -4,6 +4,7 @@ package require http
 package require tls
 package require json
 
+tls::init -tls1 true -ssl2 false -ssl3 false -tls1 true -ssl2 false -ssl3 false
 ::http::register https 443 ::tls::socket
 
 
@@ -84,7 +85,7 @@ proc get_from_binance { } {
 		}	
 
 	} err ] } {
-		puts "Error $pair, $err."
+		puts "Error $err."
 	} 	
 }
 
@@ -106,7 +107,7 @@ proc get_from_hitbtc { } {
 		}	
 
 	} err ] } {
-		puts "Error $pair, $err."
+		puts "Error $err."
 	} 		
 
 }
@@ -127,4 +128,9 @@ proc get_rate { } {
 	parray ::rate
 	puts "get_rate completed $::rate(updated). \n\n\n"
 }
+
+
+
+
+
 
