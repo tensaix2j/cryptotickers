@@ -42,6 +42,7 @@ proc get_from_bittrex { } {
 			ARKBTC \
 			SYSBTC \
 			BCCBTC \
+			NAVBTC \
 			 ] { 
 
 		if { ![ info exists ::rate_buffer(last,$pair) ] } {

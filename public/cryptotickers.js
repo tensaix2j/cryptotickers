@@ -44,7 +44,15 @@ function SimpleList() {
 			var data = this.responseJSON["data"];
 			for ( var i = 0 ; i < data.length ; i++ ) {
 				str += "<li>";
-					str += this.sprintf( "<div class='curr_rate_symbol'>%s</div>", data[i]["symbol"] );
+
+					var symbol = data[i]["symbol"];
+					if ( symbol == "BTC" ) {
+						var url = this.sprintf("http://tradingview.com/e?symbol=%sUSD", symbol );	
+					} else {
+						var url = this.sprintf("http://tradingview.com/e?symbol=%sBTC", symbol );	
+					}	
+
+					str += this.sprintf( "<div class='curr_rate_symbol'><a href='%s' target='_blank'>%s</a></div>", url, symbol );
 					str += "<div class='curr_rate'>";
 						str += this.sprintf("<div class='curr_rate_inner'>%s USD</div>", data[i]["usd"].toFixed(4) );
 						str += this.sprintf("<div class='curr_rate_inner'>%s BTC</div>", data[i]["btc"].toFixed(8) );

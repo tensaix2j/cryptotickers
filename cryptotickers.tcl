@@ -31,6 +31,7 @@ proc response { sock } {
 			ARK \
 			BCC \
 			PAY \
+			NAV \
 			XMR \
 			] { 
 
