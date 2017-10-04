@@ -17,7 +17,8 @@ proc get_from_bitstamp { } {
 		set url "https://www.bitstamp.net/api/v2/ticker/BTCUSD"
 		set responseData [ http::data [ http::geturl $url -headers [list Accept-Encoding ""]  ]]
 		
-		puts "Bitstamp returned |$responseData|"
+		#puts "Bitstamp returned |$responseData|"
+
 		set json [ ::json::json2dict $responseData ]
 		set ::rate_buffer(last,BTCUSD) [ dict get $json last ]
 
@@ -54,7 +55,8 @@ proc get_from_bittrex { } {
 					set url "https://bittrex.com/api/v1.1/public/getticker?market=$bittrex_pair"
 					set responseData [ http::data [ http::geturl $url -headers [list Accept-Encoding ""]  ]]
 					
-					puts "Bittrex returned |$responseData|"
+					#puts "Bittrex returned |$responseData|"
+					puts "Bittrex OK"
 					set json [ ::json::json2dict $responseData ]
 					set ::rate_buffer(last,$pair) [ dict get [ dict get $json result ] Last ]
 
@@ -76,6 +78,8 @@ proc get_from_binance { } {
 		set responseData [ http::data [ http::geturl $url -headers [list Accept-Encoding ""]  ]]
 				
 		#puts "Binance returned |$responseData|"
+		puts "Binance OK"
+					
 		set json [ ::json::json2dict $responseData ]
 		foreach pairitem $json {
 		
@@ -100,10 +104,14 @@ proc get_from_hitbtc { } {
 		set responseData [ http::data [ http::geturl $url -headers [list Accept-Encoding ""]  ]]
 				
 		#puts "Hitbtc returned |$responseData|"
+		puts "Hitbtc OK"
+
 		set json [ ::json::json2dict $responseData ]
 		foreach pair [ dict keys $json ] {
 			set price [ dict get [ dict get $json $pair ] last ]
-			set ::rate_buffer(last,$pair) $price
+			if { $price != "null" } {
+				set ::rate_buffer(last,$pair) $price
+			}	
 		}	
 
 	} err ] } {
@@ -129,6 +137,8 @@ proc get_rate { } {
 	puts "get_rate completed $::rate_buffer(updated). \n\n\n"
 
 	array set ::rate [ array get ::rate_buffer ]
+	#parray ::rate 
+
 	array unset ::rate_buffer *
 }
 

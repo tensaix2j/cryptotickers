@@ -18,15 +18,49 @@ proc on_data { sock msg } {
 		puts "PATH: $path"
 		puts "PROTOCOL: $protocol"
 
-		source "cryptotickers.tcl"
+		puts $sock "HTTP/1.0 200 OK"
+		
+		if { [ file extension $path ] == ".css" } {
+			puts $sock "Content-Type: text/css"
+		} else {
+			puts $sock "Content-Type: text/html"
+		}
+		puts $sock ""
+		
 		if { [ catch {
-			response $sock
-		} err ] } {
-			puts $sock "Error in cryotptickers.tcl $err"
-			puts $err
-		} 
-		close $sock
+				
+			if { $path == "/cryptotickers.json" } {
 
+				# Dynamic content
+				source "cryptotickers.tcl"
+				response $sock
+				 
+			} else {
+				# Static content
+				set filename [ file tail $path ]
+				if { $filename == "" || [ string match index* $filename ] } {
+					set filename "cryptotickers.html"
+				}
+				set fullpath "./public/$filename"
+				if { ![ file exists $fullpath ] } {
+					puts $sock "No such file"
+				}
+
+				if { [ file exists $fullpath ] } {
+					set fp [ open $fullpath ]
+					set content [ read $fp ]
+					close $fp 
+					puts $sock $content
+				}
+			}
+
+		} err ] } {
+			set errmsg "Error occured. $err"
+			puts $sock $errmsg
+			puts $errmsg
+		}	
+
+		close $sock
 		puts "\n\n"
 		break
 	}
@@ -82,6 +116,10 @@ array set ::config {
 proc main { argc argv } {
 
 	array set ::config $argv
+
+	if { [ info exists ::config(-p) ] } {
+		set ::config(-port) $::config(-p)
+	}
 
 	socket -server on_connected $::config(-port)
 	puts "Server started at port $::config(-port)"

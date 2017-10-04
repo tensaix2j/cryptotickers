@@ -1,0 +1,41 @@
+
+body {
+	background-color: #fafafa;
+
+}
+
+.threadindex_list {
+	margin: 0 auto;
+  	padding: 0;
+  	list-style-type: none;
+  	background-color: #fff;
+}
+
+@media only screen and (min-width: 788px) {
+	.threadindex_list {
+		max-width: 700px;
+		background-color: #fff;
+  		box-shadow: 0 0 1px #aaa;
+
+	}
+}
+
+
+.threadindex_list li {
+	border-top: 1px solid #EDDDDD;
+	padding: 20px;
+}
+
+.curr_rate {
+	font-size: 10pt;
+	font-family: Arial;
+}
+
+.curr_rate_symbol { 
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+.curr_rate_inner {
+	display: inline-block;
+	margin-right: 20px;
+}
