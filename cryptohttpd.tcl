@@ -38,7 +38,7 @@ proc on_data { sock msg } {
 				source "cryptotickers.tcl"
 				response $sock
 			
-			} elseif { [ string match "/cryptotickers.*" $path ] || $path == "/" || [ string match "/index*" $path ] } {
+			} elseif { [ string match "/cryptotickers.*" $path ] || $path == "/" || [ string match "/index*" $path ] || [ string match "*.json" $path ] } {
 
 				# Static content
 				set filename [ file tail [ file normalize $path ] ]
@@ -49,7 +49,7 @@ proc on_data { sock msg } {
 				}
 				set fullpath "./public/$filename"
 				if { ![ file exists $fullpath ] } {
-					puts $sock "No such file"
+					puts $sock "{}"
 				}
 
 				if { [ file exists $fullpath ] } {

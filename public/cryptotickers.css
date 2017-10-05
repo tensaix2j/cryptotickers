@@ -28,14 +28,37 @@ body {
 
 .curr_rate {
 	font-size: 10pt;
-	font-family: Arial;
+	font-family: Helvetica;
 }
 
 .curr_rate_symbol { 
+	
+	font-family: Helvetica;
 	font-weight: bold;
 	margin-bottom: 10px;
+	display: inline-block;
+
+	
 }
+
+
+
 .curr_rate_inner {
 	display: inline-block;
 	margin-right: 20px;
+	font-size: 14px;
+
+}
+
+.curr_rate_holding { 
+	margin-top: 10px;
+	margin-right: 20px;
+	display: inline-block;
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.profile_header {
+	font-size: 16pt;
+	font-weight: bold;
 }
