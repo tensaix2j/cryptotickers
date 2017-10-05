@@ -45,14 +45,22 @@ function SimpleList() {
 			for ( var i = 0 ; i < data.length ; i++ ) {
 				str += "<li>";
 
-					var symbol = data[i]["symbol"];
-					if ( symbol == "BTC" ) {
-						var url = this.sprintf("http://tradingview.com/e?symbol=%sUSD", symbol );	
-					} else {
-						var url = this.sprintf("http://tradingview.com/e?symbol=%sBTC", symbol );	
-					}	
+					var symbol 		= data[i]["symbol"];
+					var provider 	= data[i]["provider"];
 
-					str += this.sprintf( "<div class='curr_rate_symbol'><a href='%s' target='_blank'>%s</a></div>", url, symbol );
+					var pair   		= this.sprintf("%sBTC", symbol );
+					if ( symbol == "BTC" ) {
+						pair = "BTCUSD"
+					}
+
+					var chart_url = this.sprintf("http://tradingview.com/e?symbol=%s", pair );	
+					if ( provider == "binance" ) {
+						var chart_url = this.sprintf("https://www.binance.com/tradeDetail.html?symbol=%s", pair.slice(0,3) + "_" + pair.slice(3,6) );	
+					} else if ( provider == "hitbtc" ) {
+						var chart_url = this.sprintf("https://hitbtc.com/chart/%s", pair );	
+					}
+
+					str += this.sprintf( "<div class='curr_rate_symbol'><a href='%s' target='_blank'>%s</a></div>", chart_url, symbol );
 					str += "<div class='curr_rate'>";
 						str += this.sprintf("<div class='curr_rate_inner'>%s USD</div>", data[i]["usd"].toFixed(4) );
 						str += this.sprintf("<div class='curr_rate_inner'>%s BTC</div>", data[i]["btc"].toFixed(8) );

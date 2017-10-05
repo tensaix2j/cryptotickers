@@ -60,6 +60,7 @@ proc get_from_bittrex { } {
 					puts "Bittrex OK"
 					set json [ ::json::json2dict $responseData ]
 					set ::rate_buffer(last,$pair) [ dict get [ dict get $json result ] Last ]
+					set ::rate_buffer(provider,$pair) 	bittrex
 
 
 			} err ] } {
@@ -86,7 +87,8 @@ proc get_from_binance { } {
 		
 			set pair  [ dict get $pairitem symbol ]
 			set price [ dict get $pairitem price ]
-			set ::rate_buffer(last,$pair) $price
+			set ::rate_buffer(last,$pair) 		$price
+			set ::rate_buffer(provider,$pair) 	binance	
 		}	
 
 	} err ] } {
@@ -111,7 +113,9 @@ proc get_from_hitbtc { } {
 		foreach pair [ dict keys $json ] {
 			set price [ dict get [ dict get $json $pair ] last ]
 			if { $price != "null" } {
-				set ::rate_buffer(last,$pair) $price
+				set ::rate_buffer(last,$pair) 		$price
+				set ::rate_buffer(provider,$pair) 	hitbtc
+		
 			}	
 		}	
 
@@ -132,7 +136,8 @@ proc get_from_fixer { } {
 
 		set json [ ::json::json2dict $responseData ]
 		set ::rate_buffer(last,USDSGD) [ dict get [ dict get $json rates ] SGD ]
-			
+		set ::rate_buffer(provider,USDSGD) fixer
+				
 
 	} err ] } {
 		puts "Error $err."

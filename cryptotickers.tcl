@@ -51,7 +51,12 @@ proc response { sock } {
 			set ETHBTC  $::rate(last,ETHBTC)
 		} 
 
-		
+		if { [ info exists ::rate(provider,${curr}BTC) ] } {
+			set provider $::rate(provider,${curr}BTC)
+		} elseif { $curr == "BTC" } {
+			set provider "bittrex"
+		}
+			
 
 
 		if { [ info exists BTCUSD ] } {
@@ -86,7 +91,7 @@ proc response { sock } {
 			}
 			
 		}
-		lappend arr "{\"symbol\":\"$curr\",\"usd\":[ format %.4f $price_in_usd ],\"btc\":[ format %.8f $price_in_btc ],\"eth\":[ format %.8f $price_in_eth ],\"sgd\":[ format %.8f $price_in_sgd ]}"
+		lappend arr "{\"symbol\":\"$curr\",\"provider\":\"$provider\",\"usd\":[ format %.4f $price_in_usd ],\"btc\":[ format %.8f $price_in_btc ],\"eth\":[ format %.8f $price_in_eth ],\"sgd\":[ format %.8f $price_in_sgd ]}"
 				
 	}
 	set data 				"\[[ join $arr , ]\]"
