@@ -57,6 +57,8 @@ function SimpleList() {
 						str += this.sprintf("<div class='curr_rate_inner'>%s USD</div>", data[i]["usd"].toFixed(4) );
 						str += this.sprintf("<div class='curr_rate_inner'>%s BTC</div>", data[i]["btc"].toFixed(8) );
 						str += this.sprintf("<div class='curr_rate_inner'>%s ETH</div>", data[i]["eth"].toFixed(8) );
+						str += this.sprintf("<div class='curr_rate_inner'>%s SGD</div>", data[i]["sgd"].toFixed(4) );
+						
 					str += "</div>";
 				str += "</li>";
 

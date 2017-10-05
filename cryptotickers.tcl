@@ -32,12 +32,14 @@ proc response { sock } {
 			BCC \
 			PAY \
 			NAV \
+			LINK \
 			XMR \
 			] { 
 
 		set price_in_btc 0.00000000
 		set price_in_usd 0.00
 		set price_in_eth 0.00000000
+		set price_in_sgd 0.00
 
 		if { [ info exists ::rate(last,BTCUSD) ] } {
 			set BTCUSD  $::rate(last,BTCUSD)
@@ -49,6 +51,9 @@ proc response { sock } {
 			set ETHBTC  $::rate(last,ETHBTC)
 		} 
 
+		
+
+
 		if { [ info exists BTCUSD ] } {
 
 			if { $curr == "BTC"  } {
@@ -56,6 +61,7 @@ proc response { sock } {
 				set price_in_btc  1.0
 				set price_in_usd  $BTCUSD
 				set price_in_eth  [ expr 1.0 / $ETHBTC ]
+				
 
 			} elseif { [ info exists ::rate(last,${curr}BTC) ] } {
 
@@ -70,8 +76,17 @@ proc response { sock } {
 				set price_in_usd  [ expr $price_in_btc * $BTCUSD ]
 				
 			}	
+
+			# Need to know in term of SGD too
+			if { [ info exists ::rate(last,USDSGD) ] } {
+				set price_in_sgd   [ expr $price_in_usd * $::rate(last,USDSGD) ]
+			} else {
+				#in case fixer.io is down, use hardcoded rate
+				set price_in_sgd   [ expr $price_in_usd * 1.35 ]
+			}
+			
 		}
-		lappend arr "{\"symbol\":\"$curr\",\"usd\":[ format %.4f $price_in_usd ],\"btc\":[ format %.8f $price_in_btc ],\"eth\":[ format %.8f $price_in_eth ]}"
+		lappend arr "{\"symbol\":\"$curr\",\"usd\":[ format %.4f $price_in_usd ],\"btc\":[ format %.8f $price_in_btc ],\"eth\":[ format %.8f $price_in_eth ],\"sgd\":[ format %.8f $price_in_sgd ]}"
 				
 	}
 	set data 				"\[[ join $arr , ]\]"

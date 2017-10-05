@@ -121,6 +121,25 @@ proc get_from_hitbtc { } {
 
 }
 
+#-------------------------------
+proc get_from_fixer { } {
+
+	if { [ catch {
+		
+		set url "http://api.fixer.io/latest?base=USD&symbols=SGD"
+		set responseData [ http::data [ http::geturl $url -headers [list Accept-Encoding ""]  ]]
+		puts "fixer OK"
+
+		set json [ ::json::json2dict $responseData ]
+		set ::rate_buffer(last,USDSGD) [ dict get [ dict get $json rates ] SGD ]
+			
+
+	} err ] } {
+		puts "Error $err."
+	} 
+}
+
+
 #------------------------
 array set ::rate {}
 array set ::rate_buffer {}
@@ -132,16 +151,21 @@ proc get_rate { } {
 	get_from_hitbtc 
 	get_from_binance
 	get_from_bittrex
+	get_from_fixer 
 
 	set ::rate_buffer(updated) [ clock seconds ]
-	
 	puts "get_rate completed $::rate_buffer(updated). \n\n\n"
-
 	array set ::rate [ array get ::rate_buffer ]
-	#parray ::rate 
-
+	
 	array unset ::rate_buffer *
 }
+
+proc test { } {
+	get_rate 
+	parray ::rate
+}
+
+
 
 
 

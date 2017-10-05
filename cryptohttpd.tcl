@@ -28,16 +28,22 @@ proc on_data { sock msg } {
 		puts $sock ""
 		
 		if { [ catch {
-				
+			
+			# Take out the dangerous stuffs like ".." just in case...	
+			set path [ string map {.. {}} $path ]	
+
 			if { $path == "/cryptotickers.json" } {
 
 				# Dynamic content
 				source "cryptotickers.tcl"
 				response $sock
-				 
-			} else {
+			
+			} elseif { [ string match "/cryptotickers.*" $path ] || $path == "/" || [ string match "/index*" $path ] } {
+
 				# Static content
-				set filename [ file tail $path ]
+				set filename [ file tail [ file normalize $path ] ]
+				puts "|$filename|" 
+
 				if { $filename == "" || [ string match index* $filename ] } {
 					set filename "cryptotickers.html"
 				}
@@ -52,6 +58,8 @@ proc on_data { sock msg } {
 					close $fp 
 					puts $sock $content
 				}
+			} else {
+				puts $sock "Nope. Nothing there.."
 			}
 
 		} err ] } {
