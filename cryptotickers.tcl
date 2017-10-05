@@ -53,11 +53,12 @@ proc response { sock } {
 
 		if { [ info exists ::rate(provider,${curr}BTC) ] } {
 			set provider $::rate(provider,${curr}BTC)
+		} elseif {  [ info exists ::rate(provider,${curr}ETH) ] } {	
+			set provider $::rate(provider,${curr}ETH)
 		} elseif { $curr == "BTC" } {
 			set provider "bittrex"
 		}
 			
-
 
 		if { [ info exists BTCUSD ] } {
 
