@@ -26,6 +26,7 @@ proc response { sock } {
 			OMG \
 			PLR \
 			ETC \
+			LTC \
 			SALT \
 			QTUM \
 			ARK \
