@@ -73,8 +73,13 @@ proc response { sock } {
 
 				set price_in_btc  $::rate(last,${curr}BTC)
 				set price_in_usd  [ expr $price_in_btc * $BTCUSD ]
-				set price_in_eth  [ expr $price_in_btc / $ETHBTC ]
-					
+
+				if { [ info exists ::rate(last,${curr}ETH) ] } {
+					set price_in_eth  $::rate(last,${curr}ETH)
+				} else {
+					set price_in_eth  [ expr $price_in_btc / $ETHBTC ]
+				}
+				
 			} elseif { [ info exists ::rate(last,${curr}ETH) ] } {
 
 				set price_in_eth  $::rate(last,${curr}ETH)
