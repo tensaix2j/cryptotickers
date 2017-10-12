@@ -59,9 +59,14 @@ proc get_from_bittrex { } {
 					#puts "Bittrex returned |$responseData|"
 					puts "Bittrex OK"
 					set json [ ::json::json2dict $responseData ]
-					set ::rate_buffer(last,$pair) [ dict get [ dict get $json result ] Last ]
-					set ::rate_buffer(provider,$pair) 	bittrex
+					
+					set success [ dict get $json success ]
+					set rate 	[ dict get [ dict get $json result ] Last ]
 
+					if { $success == "true" } {
+						set ::rate_buffer(last,$pair) $rate
+						set ::rate_buffer(provider,$pair) 	bittrex
+					}
 
 			} err ] } {
 				puts "Error $pair, $err."
@@ -167,8 +172,9 @@ proc get_rate { } {
 
 proc test { } {
 	get_rate 
-	parray ::rate
+	parray ::rate last,*
 }
+
 
 
 
