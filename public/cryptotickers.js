@@ -113,8 +113,11 @@ function SimpleList() {
 
 					var chart_url = this.sprintf("http://tradingview.com/e?symbol=%s", pair );	
 					if ( provider == "binance" ) {
-						var chart_url = this.sprintf("https://www.binance.com/tradeDetail.html?symbol=%s", pair.slice(0,3) + "_" + pair.slice(3,6) );	
+
+						var chart_url = this.sprintf("https://www.binance.com/tradeDetail.html?symbol=%s", symbol + "_BTC" );	
+					
 					} else if ( provider == "hitbtc" ) {
+					
 						var chart_url = this.sprintf("https://hitbtc.com/chart/%s", pair );	
 					}
 

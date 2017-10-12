@@ -32,7 +32,11 @@ proc get_from_bitstamp { } {
 proc get_from_bittrex { } {
 
 	foreach pair [ list \
+			ETHBTC \
 			GNTBTC \
+			NEOBTC \
+			ETCBTC \
+			LTCBTC \
 			DGBBTC \
 			XLMBTC \
 			CVCBTC \
@@ -57,7 +61,7 @@ proc get_from_bittrex { } {
 					set responseData [ http::data [ http::geturl $url -headers [list Accept-Encoding ""]  ]]
 					
 					#puts "Bittrex returned |$responseData|"
-					puts "Bittrex OK"
+					puts "Bittrex $pair OK"
 					set json [ ::json::json2dict $responseData ]
 					
 					set success [ dict get $json success ]
@@ -71,6 +75,9 @@ proc get_from_bittrex { } {
 			} err ] } {
 				puts "Error $pair, $err."
 			} 
+		} else {
+			puts "$pair exists"
+			parray ::rate_buffer *,$pair
 		}
 	}	
 
@@ -91,9 +98,17 @@ proc get_from_binance { } {
 		foreach pairitem $json {
 		
 			set pair  [ dict get $pairitem symbol ]
-			set price [ dict get $pairitem price ]
-			set ::rate_buffer(last,$pair) 		$price
-			set ::rate_buffer(provider,$pair) 	binance	
+
+			if { ![ info exists ::rate_buffer(last,$pair) ] } {
+
+				set price [ dict get $pairitem price ]
+				set ::rate_buffer(last,$pair) 		$price
+				set ::rate_buffer(provider,$pair) 	binance	
+			
+			} else {
+				puts "$pair exists"
+				parray ::rate_buffer *,$pair
+			}
 		}	
 
 	} err ] } {
@@ -116,12 +131,18 @@ proc get_from_hitbtc { } {
 
 		set json [ ::json::json2dict $responseData ]
 		foreach pair [ dict keys $json ] {
-			set price [ dict get [ dict get $json $pair ] last ]
-			if { $price != "null" } {
-				set ::rate_buffer(last,$pair) 		$price
-				set ::rate_buffer(provider,$pair) 	hitbtc
-		
-			}	
+
+			if { ![ info exists ::rate_buffer(last,$pair) ] } {
+				set price [ dict get [ dict get $json $pair ] last ]
+				if { $price != "null" } {
+					set ::rate_buffer(last,$pair) 		$price
+					set ::rate_buffer(provider,$pair) 	hitbtc
+			
+				}	
+			} else {
+				puts "$pair exists"
+				parray ::rate_buffer *,$pair
+			}
 		}	
 
 	} err ] } {
@@ -158,9 +179,10 @@ proc get_rate { } {
 	puts "get_rate"
 
 	array unset ::rate_buffer *
-	get_from_hitbtc 
-	get_from_binance
+	
 	get_from_bittrex
+	get_from_binance
+	get_from_hitbtc 
 	get_from_fixer 
 
 	set ::rate_buffer(updated) [ clock seconds ]
