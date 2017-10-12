@@ -32,6 +32,7 @@ proc get_from_bitstamp { } {
 proc get_from_bittrex { } {
 
 	foreach pair [ list \
+			NAVBTC \
 			ETHBTC \
 			GNTBTC \
 			NEOBTC \
@@ -46,7 +47,7 @@ proc get_from_bittrex { } {
 			ARKBTC \
 			SYSBTC \
 			BCCBTC \
-			NAVBTC \
+			
 			 ] { 
 
 		if { ![ info exists ::rate_buffer(last,$pair) ] } {
@@ -64,10 +65,11 @@ proc get_from_bittrex { } {
 					puts "Bittrex $pair OK"
 					set json [ ::json::json2dict $responseData ]
 					
+
 					set success [ dict get $json success ]
 					set rate 	[ dict get [ dict get $json result ] Last ]
 
-					if { $success == "true" } {
+					if { $success == "true" && $rate != "null" } {
 						set ::rate_buffer(last,$pair) $rate
 						set ::rate_buffer(provider,$pair) 	bittrex
 					}
@@ -79,6 +81,7 @@ proc get_from_bittrex { } {
 			puts "$pair exists"
 			parray ::rate_buffer *,$pair
 		}
+
 	}	
 
 }
@@ -189,12 +192,14 @@ proc get_rate { } {
 	puts "get_rate completed $::rate_buffer(updated). \n\n\n"
 	array set ::rate [ array get ::rate_buffer ]
 	
+	parray ::rate last,*
+
 	array unset ::rate_buffer *
 }
 
 proc test { } {
 	get_rate 
-	parray ::rate last,*
+	parray ::rate 
 }
 
 
