@@ -155,6 +155,36 @@ proc get_from_hitbtc { } {
 }
 
 #-------------------------------
+proc get_from_kucoin { } {
+
+	foreach pair [ list \
+			KCSETH \
+			KCSBTC \
+	] { 
+		#https://api.kucoin.com/v1/open/tick?symbol=KCS-BTC
+		if { [ catch { 
+
+			set pair_len 	[ string length $pair ]
+			set base_curr  	[ string range $pair $pair_len-3 $pair_len-1 ]
+			set curr  	[ string range $pair 0   $pair_len-4 ]
+
+			set kucoin_pair "$curr-$base_curr"
+
+			set url "https://api.kucoin.com/v1/open/tick?symbol=$kucoin_pair"
+			set responseData [ http::data [ http::geturl $url -headers [list Accept-Encoding ""]  ]]
+			puts "kucoin OK"
+
+			set json [ ::json::json2dict $responseData ]
+			set ::rate_buffer(last,$pair) [ dict get [ dict get $json data ] lastDealPrice ]
+
+
+		} err ] } {
+			puts "Error $pair, $err."
+		}
+	}
+}
+
+#-------------------------------
 proc get_from_fixer { } {
 
 	if { [ catch {
@@ -182,9 +212,8 @@ proc get_rate { } {
 	puts "get_rate"
 
 	array unset ::rate_buffer *
-	
-	get_from_bittrex
 	get_from_binance
+	get_from_kucoin
 	get_from_hitbtc 
 	get_from_fixer 
 
@@ -198,8 +227,8 @@ proc get_rate { } {
 }
 
 proc test { } {
-	get_rate 
-	parray ::rate 
+	get_from_kucoin
+	parray ::rate_buffer 
 }
 
 

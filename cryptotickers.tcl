@@ -36,6 +36,7 @@ proc response { sock } {
 			LINK \
 			XMR \
 			BTG \
+			KCS \
 			] { 
 
 		set price_in_btc 0.00000000
