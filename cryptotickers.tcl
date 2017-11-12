@@ -30,11 +30,12 @@ proc response { sock } {
 			SALT \
 			QTUM \
 			ARK \
-			BCC \
+			BCH \
 			PAY \
 			NAV \
 			LINK \
 			XMR \
+			BTG \
 			] { 
 
 		set price_in_btc 0.00000000
