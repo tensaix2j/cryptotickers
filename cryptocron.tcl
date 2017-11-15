@@ -33,21 +33,8 @@ proc get_from_bittrex { } {
 
 	foreach pair [ list \
 			NAVBTC \
-			ETHBTC \
-			GNTBTC \
-			NEOBTC \
-			ETCBTC \
-			LTCBTC \
-			DGBBTC \
-			XLMBTC \
 			CVCBTC \
-			STEEMBTC \
-			XRPBTC \
-			SCBTC \
-			ARKBTC \
 			SYSBTC \
-			BCCBTC \
-			
 			 ] { 
 
 		if { ![ info exists ::rate_buffer(last,$pair) ] } {
@@ -215,7 +202,8 @@ proc get_rate { } {
 	get_from_binance
 	get_from_kucoin
 	get_from_hitbtc 
-	get_from_fixer 
+	get_from_fixer
+	get_from_bittrex
 
 	set ::rate_buffer(updated) [ clock seconds ]
 	puts "get_rate completed $::rate_buffer(updated). \n\n\n"
