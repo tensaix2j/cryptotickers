@@ -37,6 +37,7 @@ proc response { sock } {
 			XMR \
 			BTG \
 			KCS \
+			CLUB \
 			] { 
 
 		set price_in_btc 0.00000000
