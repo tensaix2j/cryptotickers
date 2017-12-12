@@ -90,6 +90,8 @@ function SimpleList() {
 		var mylist = document.getElementById("threadindex_list");
 		this.coin_usdval = {};
 		this.coin_sgdval = {};
+		this.coin_btcval = {};
+		this.coin_ethval = {};
 
 		var str = ""
 		if ( typeof this.exchange_rates != 'undefined' ) {
@@ -105,6 +107,9 @@ function SimpleList() {
 
 					this.coin_usdval[symbol] = data[i]["usd"];
 					this.coin_sgdval[symbol] = data[i]["sgd"];
+					this.coin_btcval[symbol] = data[i]["btc"];
+					this.coin_ethval[symbol] = data[i]["eth"];
+
 
 					var pair   		= this.sprintf("%sBTC", symbol );
 					if ( symbol == "BTC" ) {
@@ -136,7 +141,9 @@ function SimpleList() {
 						str += this.sprintf( "<div class='curr_rate_holding' id='curr_rate_holding_symbol_%s'></div>", symbol );
 						str += this.sprintf( "<div class='curr_rate_holding' id='curr_rate_holding_usd_%s'></div>", symbol );
 						str += this.sprintf( "<div class='curr_rate_holding' id='curr_rate_holding_sgd_%s'></div>", symbol );
-						
+						str += this.sprintf( "<div class='curr_rate_holding' id='curr_rate_holding_btc_%s'></div>", symbol );
+						str += this.sprintf( "<div class='curr_rate_holding' id='curr_rate_holding_eth_%s'></div>", symbol );
+												
 					str += "</div>"
 
 				str += "</li>";
@@ -154,6 +161,8 @@ function SimpleList() {
 			
 			this.total_usd = 0.0;
 			this.total_sgd = 0.0;
+			this.total_btc = 0.0;
+			this.total_eth = 0.0;
 
 			for ( var key in this.profile ) {
 				
@@ -176,7 +185,21 @@ function SimpleList() {
 					var dom_sgd 	= document.getElementById("curr_rate_holding_sgd_" + symbol );
 					if ( dom_sgd ) {
 						dom_sgd.innerHTML = this.numberWithCommas( own_sgd.toFixed(2) ) + " SGD";
-					} 
+					}
+
+					var own_btc 	= own * this.coin_btcval[symbol];
+					this.total_btc += own_btc;
+					var dom_btc 	= document.getElementById("curr_rate_holding_btc_" + symbol );
+					if ( dom_btc ) {
+						dom_btc.innerHTML = this.numberWithCommas( own_btc.toFixed(4) ) + " BTC";
+					}
+
+					var own_eth 	= own * this.coin_ethval[symbol];
+					this.total_eth += own_eth;
+					var dom_eth 	= document.getElementById("curr_rate_holding_eth_" + symbol );
+					if ( dom_eth ) {
+						dom_eth.innerHTML = this.numberWithCommas( own_eth.toFixed(4) ) + " ETH";
+					}	
 
 				}		
 			}
@@ -185,6 +208,9 @@ function SimpleList() {
 				str += this.sprintf( "<div class='profile_header'>%s</div>", this.profile_name );
 				str += this.sprintf( "<div class='curr_rate_holding'>Total USD: %s </div>", this.numberWithCommas( this.total_usd.toFixed(2) ));
 				str += this.sprintf( "<div class='curr_rate_holding'>Total SGD: %s </div>", this.numberWithCommas( this.total_sgd.toFixed(2) ));
+				str += this.sprintf( "<div class='curr_rate_holding'>Total BTC: %s </div>", this.numberWithCommas( this.total_btc.toFixed(2) ));
+				str += this.sprintf( "<div class='curr_rate_holding'>Total ETH: %s </div>", this.numberWithCommas( this.total_eth.toFixed(2) ));
+				
 			str += "</div>";
 
 			document.getElementById("li_profile").innerHTML = str;
