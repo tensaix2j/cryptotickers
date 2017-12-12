@@ -35,6 +35,9 @@ proc get_from_bittrex { } {
 			NAVBTC \
 			CVCBTC \
 			SYSBTC \
+			GNTBTC \
+			XLMBTC \
+			CLUBBTC \
 			 ] { 
 
 		if { ![ info exists ::rate_buffer(last,$pair) ] } {

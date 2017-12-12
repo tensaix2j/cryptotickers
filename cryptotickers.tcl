@@ -7,6 +7,7 @@ proc response { sock } {
 	
 	foreach curr [ list \
 			BTC \
+			USDT \
 			ETH \
 			NEO \
 			BNB \
@@ -32,11 +33,14 @@ proc response { sock } {
 			ARK \
 			BCH \
 			PAY \
+			POWR \
 			NAV \
 			LINK \
 			XMR \
 			BTG \
 			KCS \
+			CLUB \
+			ENJ \
 			] { 
 
 		set price_in_btc 0.00000000
@@ -71,6 +75,12 @@ proc response { sock } {
 				set price_in_usd  $BTCUSD
 				set price_in_eth  [ expr 1.0 / $ETHBTC ]
 				
+
+			} elseif { $curr == "USDT" } {
+
+				set price_in_btc [ expr 1.0 / $BTCUSD ] 
+				set price_in_usd  1.0
+				set price_in_eth [ expr 1.0 / ( $BTCUSD * $ETHBTC)  ]
 
 			} elseif { [ info exists ::rate(last,${curr}BTC) ] } {
 
