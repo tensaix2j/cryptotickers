@@ -8,25 +8,35 @@ function SimpleList() {
 		var sl = this;
 		this.loadJSON("/cryptotickers.json", function( obj ) {
 			sl.exchange_rates = obj;
-            sl.render_list();
-            var profile = sl.get_querystring_value("profile") ;
-            if ( profile ) {
-				sl.get_holdings(profile);
+	        sl.render_list();
+	        var profile = sl.get_querystring_value("profile") ;
+	        var server  = sl.get_querystring_value("server");
+
+	        if ( profile ) {
+				sl.get_holdings(profile, server);
 			}	    	
-	    }, function(xhr) {
-	    	console.log("Error!");
+		}, function(xhr) {
+			console.log("Error!");
 	    });
 	}
 
 	//-----------
 	// Get user's holding from profile
-	this.get_holdings = function( profile_name ) {
-			
+	this.get_holdings = function( profile_name , server ) {
+		
+		console.log( server, profile_name );
+
+		var useurl = "/" + profile_name + ".json";
+		if ( /myjson/.test(server) ) {
+			useurl = "https://api.myjson.com/bins/" + profile_name;
+		} 
+		
 		var sl = this;
 		this.profile_name = profile_name;
-		this.loadJSON("/" + profile_name + ".json", function( obj ) {
+		this.loadJSON(useurl, function( obj ) {
+			
 			sl.profile = obj;
-            sl.render_profile();
+        	sl.render_profile();
             	    	
 	    }, function(xhr) {
 	    	console.log("Error!");
