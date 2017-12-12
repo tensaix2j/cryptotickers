@@ -10,10 +10,9 @@ function SimpleList() {
 			sl.exchange_rates = obj;
 	        sl.render_list();
 	        var profile = sl.get_querystring_value("profile") ;
-	        var server  = sl.get_querystring_value("server");
-
+	        
 	        if ( profile ) {
-				sl.get_holdings(profile, server);
+				sl.get_holdings(profile);
 			}	    	
 		}, function(xhr) {
 			console.log("Error!");
@@ -22,14 +21,9 @@ function SimpleList() {
 
 	//-----------
 	// Get user's holding from profile
-	this.get_holdings = function( profile_name , server ) {
+	this.get_holdings = function( profile_name  ) {
 		
-		console.log( server, profile_name );
-
-		var useurl = "/" + profile_name + ".json";
-		if ( /myjson/.test(server) ) {
-			useurl = "https://api.myjson.com/bins/" + profile_name;
-		} 
+		useurl = "https://api.myjson.com/bins/" + profile_name;
 		
 		var sl = this;
 		this.profile_name = profile_name;
