@@ -175,7 +175,7 @@ function SimpleList() {
 
 				var dom = document.getElementById("curr_rate_holding_symbol_"+ symbol ) ;
 				if ( dom ) {
-					dom.innerHTML = "You Own : " + own + " " + symbol;
+					dom.innerHTML = "<div class='youown'>You Own : </div>" + own + " " + symbol;
 				
 					var own_usd 	= own * this.coin_usdval[symbol];
 					this.total_usd += own_usd;

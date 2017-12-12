@@ -26,6 +26,13 @@ body {
 	padding: 20px;
 }
 
+.threadindex_list li:nth-child(even) {
+	background: #ffffff;
+}
+.threadindex_list li:nth-child(odd) {
+	background: #ffffee;
+}
+
 .curr_rate {
 	font-size: 10pt;
 	font-family: Helvetica;
@@ -61,4 +68,9 @@ body {
 .profile_header {
 	font-size: 16pt;
 	font-weight: bold;
+}
+
+.youown {
+	margin-top: 12px;
+	margin-bottom: 12px;
 }
