@@ -132,7 +132,7 @@ proc main { argc argv } {
 	socket -server on_connected $::config(-port)
 	puts "Server started at port $::config(-port)"
 
-	source "cryptocron.tcl"
+	source "[ file dirname [info script] ]/cryptocron.tcl"
 	do_cron 
 
 	vwait forever	
