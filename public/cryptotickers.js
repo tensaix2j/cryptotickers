@@ -135,12 +135,7 @@ function SimpleList() {
 					}
 
 					var chart_url = this.sprintf("http://tradingview.com/e?symbol=%s", pair );	
-					if ( provider == "binance" ) {
-
-						var chart_url = this.sprintf("https://www.binance.com/tradeDetail.html?symbol=%s", symbol + "_BTC" );	
-					
-					} else if ( provider == "hitbtc" ) {
-					
+					if ( provider == "hitbtc" ) {
 						var chart_url = this.sprintf("https://hitbtc.com/chart/%s", pair );	
 					}
 
