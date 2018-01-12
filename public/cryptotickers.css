@@ -41,7 +41,8 @@ a {
 }
 
 .curr_rate {
-	font-size: 9pt;
+	font-size: 14px;
+	
 }
 
 .curr_rate_symbol { 
@@ -58,15 +59,16 @@ a {
 .curr_rate_inner {
 	display: inline-block;
 	margin-right: 20px;
-	font-size: 12px;
-
+	margin-bottom: 10px;
+	font-size: 14px;
+	width: 140px;
 }
 
 .curr_rate_holding_title { 
 
 	margin-top: 40px;
 	margin-right: 20px;
-	font-size: 12px;
+	font-size: 14px;
 	font-weight: bold;
 
 }
@@ -84,7 +86,7 @@ hr {
 	margin-right: 20px;
 	display: inline-block;
 	
-	font-size: 12px;
+	font-size: 14px;
 	font-weight: bold;
 	
 	width: 140px;
