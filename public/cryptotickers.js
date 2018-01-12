@@ -168,6 +168,7 @@ function SimpleList() {
 				sl_obj.total_sgd = 0.0;
 				sl_obj.total_btc = 0.0;
 				sl_obj.total_eth = 0.0;
+				sl_obj.own = 0.0;
 			}
 			sorted_list.push( sl_obj );
 		}
