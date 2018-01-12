@@ -41,6 +41,10 @@ proc response { sock } {
 			KCS \
 			CLUB \
 			ENJ \
+			OST \
+			ADA \
+			CND \
+			BCN \
 			] { 
 
 		set price_in_btc 0.00000000
