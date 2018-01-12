@@ -45,6 +45,7 @@ proc response { sock } {
 			ADA \
 			CND \
 			BCN \
+			TIO \
 			] { 
 
 		set price_in_btc 0.00000000

@@ -195,6 +195,40 @@ proc get_from_fixer { } {
 
 
 #------------------------
+proc get_from_okex { } {
+
+	
+
+	foreach pair [ list \
+			TIOBTC \
+			TIOETH \
+	] { 
+		#https://www.okex.com/api/v1/ticker.do?symbol=tio_usdt
+		if { [ catch { 
+
+			set pair_len 	[ string length $pair ]
+			set base_curr  	[ string range $pair $pair_len-3 $pair_len-1 ]
+			set curr  		[ string range $pair 0   $pair_len-4 ]
+
+			set okex_pair "${curr}_$base_curr"
+
+			set url "https://www.okex.com/api/v1/ticker.do?symbol=$okex_pair"
+			set responseData [ http::data [ http::geturl $url -headers [list Accept-Encoding ""]  ]]
+			puts "OKEX OK"
+
+			set json [ ::json::json2dict $responseData ]
+
+			set ::rate_buffer(last,$pair) [ dict get [ dict get $json ticker ] last ]
+
+
+		} err ] } {
+			puts "Error OKEX $pair, $err."
+		}
+	}
+
+}
+
+#------------------------
 array set ::rate {}
 array set ::rate_buffer {}
 proc get_rate { } {
@@ -203,11 +237,22 @@ proc get_rate { } {
 
 	array unset ::rate_buffer *
 	get_from_binance
+	after 500
 	get_from_kucoin
+	after 500
+	
 	get_from_hitbtc 
+	after 500
+	
 	get_from_fixer
+	after 500
+	
 	get_from_bittrex
-
+	after 500
+	
+	get_from_okex
+	after 500
+	
 	set ::rate_buffer(updated) [ clock seconds ]
 	puts "get_rate completed $::rate_buffer(updated). \n\n\n"
 	array set ::rate [ array get ::rate_buffer ]
@@ -217,11 +262,11 @@ proc get_rate { } {
 	array unset ::rate_buffer *
 }
 
+#--------------------
 proc test { } {
-	get_from_kucoin
+	get_from_okex
 	parray ::rate_buffer 
 }
-
 
 
 
