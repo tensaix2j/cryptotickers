@@ -40,10 +40,8 @@ a {
 	color:#fff;
 }
 
-.curr_rate {
-	font-size: 14px;
-	
-}
+
+
 
 .curr_rate_symbol { 
 	
@@ -60,25 +58,15 @@ a {
 	display: inline-block;
 	margin-right: 20px;
 	margin-bottom: 10px;
-	font-size: 14px;
-	width: 140px;
+	font-size: 12px;
+	width: 100px;
 }
 
 .curr_rate_holding_title { 
-
 	margin-top: 40px;
 	margin-right: 20px;
-	font-size: 14px;
+	font-size: 12px;
 	font-weight: bold;
-
-}
-
-hr {
-    border: none;
-    height: 1px;
-    /* Set the hr color */
-    color: #333; /* old IE */
-    background-color: #444; /* Modern Browsers */
 }
 
 .curr_rate_holding { 
@@ -86,12 +74,31 @@ hr {
 	margin-right: 20px;
 	display: inline-block;
 	
-	font-size: 14px;
+	font-size: 12px;
 	font-weight: bold;
 	
-	width: 140px;
+	width: 100px;
 	vertical-align: top;
 }
+
+
+@media only screen and (min-width: 400px) {
+	.curr_rate_inner {
+		font-size: 14px;	
+		width: 140px;
+	}
+	.curr_rate_holding_title { 
+		font-size: 14px;
+	}
+	.curr_rate_holding { 
+		font-size: 14px;
+		width: 140px;
+	}
+}
+
+
+
+
 
 .profile_header {
 	font-size: 16pt;
@@ -101,4 +108,12 @@ hr {
 .youown {
 	margin-top: 12px;
 	margin-bottom: 12px;
+}
+
+hr {
+    border: none;
+    height: 1px;
+    /* Set the hr color */
+    color: #333; /* old IE */
+    background-color: #444; /* Modern Browsers */
 }
