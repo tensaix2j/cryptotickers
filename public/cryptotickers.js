@@ -7,18 +7,30 @@ function SimpleList() {
 
 		var sl = this;
 		this.loadJSON("/cryptotickers.json", function( obj ) {
-			sl.exchange_rates = obj;
-	        sl.render_list();
+
+			sl.exchange_rates = {}
+			for ( i = 0 ; i < obj.data.length ; i++ ) {
+				sl.exchange_rates[ obj.data[i].symbol ] = obj.data[i]; 
+			}
+	        sl.last_updated = obj.last_updated;
+
 	        var profile = sl.get_querystring_value("profile") ;
 	        var server  = sl.get_querystring_value("server");
 
 	        if ( !server ) {
-	        	server = "myjson";
+	        	server = "jsonblob";
 	        }
 
 	        if ( profile ) {
+				
+
 				sl.get_holdings(profile, server);
-			}	    	
+				// Render list at the callback of get_holdings
+
+			} else { 
+				sl.render_list();
+			}
+
 		}, function(xhr) {
 			console.log("Error!");
 	    });
@@ -28,7 +40,7 @@ function SimpleList() {
 	// Get user's holding from profile
 	this.get_holdings = function( profile_name , server ) {
 		
-		console.log( profile_name , server );
+		console.log( "get_holdings", profile_name , server );
 
 		var useurl ;
 		if ( server == "myjson" ) { 
@@ -40,11 +52,33 @@ function SimpleList() {
 		}
 
 		var sl = this;
+
+
+		sl.total_usd = 0.0;
+		sl.total_sgd = 0.0;
+		sl.total_btc = 0.0;
+		sl.total_eth = 0.0;
+
+
 		this.profile_name = profile_name;
 		this.loadJSON(useurl, function( obj ) {
-			
-			sl.profile = obj;
-        	sl.render_profile();
+			for (curr in obj ) {
+				if ( typeof sl.exchange_rates[curr] != "undefined" ) {
+					sl_obj = sl.exchange_rates[curr];
+					sl_obj.own = obj[curr];
+					sl_obj.total_usd = sl_obj.own * sl_obj.usd;
+					sl_obj.total_sgd = sl_obj.own * sl_obj.sgd;
+					sl_obj.total_btc = sl_obj.own * sl_obj.btc;
+					sl_obj.total_eth = sl_obj.own * sl_obj.eth;
+
+					sl.total_usd += sl_obj.total_usd ;
+					sl.total_sgd += sl_obj.total_sgd ;
+					sl.total_btc += sl_obj.total_btc ;
+					sl.total_eth += sl_obj.total_eth ;
+						
+				}
+			}
+			sl.render_list();
             	    	
 	    }, function(xhr) {
 	    	console.log("Error!");
@@ -104,131 +138,113 @@ function SimpleList() {
 
 	//-----
 	this.render_list = function() {
-			
+		
+		console.log("render_list");
+
+		var sl = this;
+
+		
 		var mylist = document.getElementById("threadindex_list");
-		this.coin_usdval = {};
-		this.coin_sgdval = {};
-		this.coin_btcval = {};
-		this.coin_ethval = {};
-
 		var str = ""
-		if ( typeof this.exchange_rates != 'undefined' ) {
-			var data = this.exchange_rates["data"];
 
-			str += "<li id='li_profile'></li>";
+		if ( typeof sl.total_usd != "undefined" ) {
+			str += "<li id='li_profile'>";
+			str += "<div>";
+			str += this.sprintf( "<div class='profile_header'>%s</div>", this.profile_name );
+			str += this.sprintf( "<div class='curr_rate_holding'>Total USD: %s </div>", this.numberWithCommas( sl.total_usd.toFixed(2) ));
+			str += this.sprintf( "<div class='curr_rate_holding'>Total SGD: %s </div>", this.numberWithCommas( sl.total_sgd.toFixed(2) ));
+			str += this.sprintf( "<div class='curr_rate_holding'>Total BTC: %s </div>", this.numberWithCommas( sl.total_btc.toFixed(4) ));
+			str += this.sprintf( "<div class='curr_rate_holding'>Total ETH: %s </div>", this.numberWithCommas( sl.total_eth.toFixed(4) ));
+			str += "</div>";
+			str += "</li>";
+		}
+		
 
-			for ( var i = 0 ; i < data.length ; i++ ) {
-				str += "<li>";
-
-					var symbol 		= data[i]["symbol"];
-					var provider 	= data[i]["provider"];
-
-					this.coin_usdval[symbol] = data[i]["usd"];
-					this.coin_sgdval[symbol] = data[i]["sgd"];
-					this.coin_btcval[symbol] = data[i]["btc"];
-					this.coin_ethval[symbol] = data[i]["eth"];
-
-
-					var pair   		= this.sprintf("%sBTC", symbol );
-					if ( symbol == "BTC" ) {
-						pair = "BTCUSD"
-					}
-
-					var chart_url = this.sprintf("http://tradingview.com/e?symbol=%s", pair );	
-					if ( provider == "hitbtc" ) {
-						var chart_url = this.sprintf("https://hitbtc.com/chart/%s", pair );	
-					}
-
-					str += "<div class='curr_rate_header'>"
-						str += this.sprintf( "<div class='curr_rate_symbol'><a href='%s' target='_blank'>%s</a></div>", chart_url, symbol );
-
-					str += "</div>"
-					str += "<div class='curr_rate'>";
-						str += this.sprintf("<div class='curr_rate_inner'>%s USD</div>", data[i]["usd"].toFixed(4) );
-						str += this.sprintf("<div class='curr_rate_inner'>%s BTC</div>", data[i]["btc"].toFixed(8) );
-						str += this.sprintf("<div class='curr_rate_inner'>%s SGD</div>", data[i]["sgd"].toFixed(4) );
-						str += this.sprintf("<div class='curr_rate_inner'>%s ETH</div>", data[i]["eth"].toFixed(8) );
-						
-					str += "</div>";
-					str += "<div>";
-						str += this.sprintf( "<div class='curr_rate_holding' id='curr_rate_holding_symbol_%s'></div>", symbol );
-						str += this.sprintf( "<div class='curr_rate_holding' id='curr_rate_holding_usd_%s'></div>", symbol );
-						str += this.sprintf( "<div class='curr_rate_holding' id='curr_rate_holding_sgd_%s'></div>", symbol );
-						str += this.sprintf( "<div class='curr_rate_holding' id='curr_rate_holding_btc_%s'></div>", symbol );
-						str += this.sprintf( "<div class='curr_rate_holding' id='curr_rate_holding_eth_%s'></div>", symbol );
-												
-					str += "</div>"
-
-				str += "</li>";
-
+		var sorted_list = []
+		for ( symbol in sl.exchange_rates ) {
+			var sl_obj = sl.exchange_rates[symbol] 
+			if ( typeof sl_obj.total_usd == "undefined" ) {
+				sl_obj.total_usd = 0.0;
+				sl_obj.total_sgd = 0.0;
+				sl_obj.total_btc = 0.0;
+				sl_obj.total_eth = 0.0;
 			}
-			str += this.sprintf("<li>Last Updated: %s</li>", this.exchange_rates["last_updated"] );
-		}	
+			sorted_list.push( sl_obj );
+		}
+		sorted_list.sort( sl.compare );
+
+
+
+
+		for ( i = 0 ; i < sorted_list.length ; i++ ) {
+			
+			str += "<li>";
+
+				var symbol 		= sorted_list[i].symbol;
+				var sl_obj 		= sl.exchange_rates[symbol];
+				var provider 	= sl_obj.provider;
+
+				
+				var pair   		= this.sprintf("%sBTC", symbol );
+				if ( symbol == "BTC" ) {
+					pair = "BTCUSDT"
+				}
+
+
+				var chart_url = this.sprintf("http://tradingview.com/e?symbol=BINANCE:%s", pair );	
+				if ( provider == "hitbtc" ) {
+					var chart_url = this.sprintf("https://hitbtc.com/chart/%s", pair );	
+				}
+
+				str += "<div class='curr_rate_header'>"
+					str += this.sprintf( "<div class='curr_rate_symbol'><a href='%s' target='_blank'>%s</a></div>", chart_url, symbol );
+
+				str += "</div>"
+				str += "<div class='curr_rate'>";
+					str += this.sprintf("<div class='curr_rate_inner'>%s USD</div>", sl_obj.usd.toFixed(4) );
+					str += this.sprintf("<div class='curr_rate_inner'>%s BTC</div>", sl_obj.btc.toFixed(8) );
+					str += this.sprintf("<div class='curr_rate_inner'>%s SGD</div>", sl_obj.sgd.toFixed(4) );
+					str += this.sprintf("<div class='curr_rate_inner'>%s ETH</div>", sl_obj.eth.toFixed(8) );
+					
+				str += "</div>";
+				
+				if ( typeof sl_obj.total_usd != "undefined" ) {
+					str += "<div>";
+					str += this.sprintf( "<hr /><div class='curr_rate_holding_title'>You Own</div>", symbol );
+					str += this.sprintf( "<div class='curr_rate_holding' id='curr_rate_holding_usd_%s'>%s USD</div>", symbol, this.numberWithCommas( sl_obj.total_usd.toFixed(2) ) );
+					str += this.sprintf( "<div class='curr_rate_holding' id='curr_rate_holding_sgd_%s'>%s SGD</div>", symbol, this.numberWithCommas( sl_obj.total_sgd.toFixed(2) ) );
+					str += this.sprintf( "<div class='curr_rate_holding' id='curr_rate_holding_btc_%s'>%s BTC</div>", symbol, this.numberWithCommas( sl_obj.total_btc.toFixed(4) ) );
+					str += this.sprintf( "<div class='curr_rate_holding' id='curr_rate_holding_eth_%s'>%s ETH</div>", symbol, this.numberWithCommas( sl_obj.total_eth.toFixed(4) ) );
+					str += "</div>"
+				}
+			str += "</li>";
+
+		}
+		str += this.sprintf("<li>Last Updated: %s</li>", this.last_updated );
+		
+
+
 		mylist.innerHTML = str;
 	}
 
-	//------------
-	this.render_profile = function() {
-		
-		if ( typeof this.profile != 'undefined' ) {
-			
-			this.total_usd = 0.0;
-			this.total_sgd = 0.0;
-			this.total_btc = 0.0;
-			this.total_eth = 0.0;
 
-			for ( var key in this.profile ) {
-				
-				var symbol 		= key;
-				var own 		= this.profile[key];
 
-				var dom = document.getElementById("curr_rate_holding_symbol_"+ symbol ) ;
-				if ( dom ) {
-					dom.innerHTML = "<div class='youown'>You Own : </div>" + own + " " + symbol;
-				
-					var own_usd 	= own * this.coin_usdval[symbol];
-					this.total_usd += own_usd;
-					var dom_usd 	= document.getElementById("curr_rate_holding_usd_" + symbol );
-					if ( dom_usd ) {
-						dom_usd.innerHTML = this.numberWithCommas( own_usd.toFixed(2)  ) + " USD";
-					} 
 
-					var own_sgd 	= own * this.coin_sgdval[symbol];
-					this.total_sgd += own_sgd;
-					var dom_sgd 	= document.getElementById("curr_rate_holding_sgd_" + symbol );
-					if ( dom_sgd ) {
-						dom_sgd.innerHTML = this.numberWithCommas( own_sgd.toFixed(2) ) + " SGD";
-					}
+	//-------------
+	this.compare = function( a, b) {
 
-					var own_btc 	= own * this.coin_btcval[symbol];
-					this.total_btc += own_btc;
-					var dom_btc 	= document.getElementById("curr_rate_holding_btc_" + symbol );
-					if ( dom_btc ) {
-						dom_btc.innerHTML = this.numberWithCommas( own_btc.toFixed(4) ) + " BTC";
-					}
-
-					var own_eth 	= own * this.coin_ethval[symbol];
-					this.total_eth += own_eth;
-					var dom_eth 	= document.getElementById("curr_rate_holding_eth_" + symbol );
-					if ( dom_eth ) {
-						dom_eth.innerHTML = this.numberWithCommas( own_eth.toFixed(4) ) + " ETH";
-					}	
-
-				}		
-			}
-
-			var str = "<div>";
-				str += this.sprintf( "<div class='profile_header'>%s</div>", this.profile_name );
-				str += this.sprintf( "<div class='curr_rate_holding'>Total USD: %s </div>", this.numberWithCommas( this.total_usd.toFixed(2) ));
-				str += this.sprintf( "<div class='curr_rate_holding'>Total SGD: %s </div>", this.numberWithCommas( this.total_sgd.toFixed(2) ));
-				str += this.sprintf( "<div class='curr_rate_holding'>Total BTC: %s </div>", this.numberWithCommas( this.total_btc.toFixed(2) ));
-				str += this.sprintf( "<div class='curr_rate_holding'>Total ETH: %s </div>", this.numberWithCommas( this.total_eth.toFixed(2) ));
-				
-			str += "</div>";
-
-			document.getElementById("li_profile").innerHTML = str;
+		if ( a.total_usd < b.total_usd ) {
+	    	return 1;
+	    }
+		if ( a.total_usd > b.total_usd ) {
+			return -1;
 		}
+		return 0;
+	
 	}
+
+
+	
 
 	//--------------
 	this.numberWithCommas = function(x) {

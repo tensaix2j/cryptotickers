@@ -1,7 +1,9 @@
 
 body {
-	background-color: #fafafa;
-
+	background-color: #3f423d;
+	font-family: 'Varela Round';
+	color:#ffffee;
+	
 }
 
 .threadindex_list {
@@ -27,20 +29,23 @@ body {
 }
 
 .threadindex_list li:nth-child(even) {
-	background: #ffffff;
+	background: #393d37;
 }
 .threadindex_list li:nth-child(odd) {
-	background: #ffffee;
+	background: #5f685a;
+}
+
+
+a {
+	color:#fff;
 }
 
 .curr_rate {
-	font-size: 10pt;
-	font-family: Helvetica;
+	font-size: 9pt;
 }
 
 .curr_rate_symbol { 
 	
-	font-family: Helvetica;
 	font-weight: bold;
 	margin-bottom: 10px;
 	display: inline-block;
@@ -53,16 +58,37 @@ body {
 .curr_rate_inner {
 	display: inline-block;
 	margin-right: 20px;
-	font-size: 14px;
+	font-size: 12px;
 
+}
+
+.curr_rate_holding_title { 
+
+	margin-top: 40px;
+	margin-right: 20px;
+	font-size: 12px;
+	font-weight: bold;
+
+}
+
+hr {
+    border: none;
+    height: 1px;
+    /* Set the hr color */
+    color: #333; /* old IE */
+    background-color: #444; /* Modern Browsers */
 }
 
 .curr_rate_holding { 
 	margin-top: 10px;
 	margin-right: 20px;
 	display: inline-block;
-	font-size: 14px;
+	
+	font-size: 12px;
 	font-weight: bold;
+	
+	width: 140px;
+	vertical-align: top;
 }
 
 .profile_header {

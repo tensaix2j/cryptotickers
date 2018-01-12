@@ -22,9 +22,19 @@ proc on_data { sock msg } {
 		
 		if { [ file extension $path ] == ".css" } {
 			puts $sock "Content-Type: text/css"
+		
+		} elseif { [ file extension $path ] == ".font" } {
+
+			puts $sock "Content-Type: application/font-woff"
+
+		} elseif { [ file extension $path ] == ".js" } {
+
+			puts $sock "Content-Type: application/javascript"
+
 		} else {
 			puts $sock "Content-Type: text/html"
 		}
+
 		puts $sock ""
 		
 		if { [ catch {
@@ -38,8 +48,14 @@ proc on_data { sock msg } {
 				source "cryptotickers.tcl"
 				response $sock
 			
-			} elseif { [ string match "/cryptotickers.*" $path ] || $path == "/" || [ string match "/index*" $path ] || [ string match "*.json" $path ] } {
-
+			} elseif { [ string match "/cryptotickers.*" $path ] || \
+				$path == "/" || \
+				[ string match "/index?*" $path ] || \
+				[ string match "/*.html/*" $path ] || \
+				[ string match "/*.css"  $path ] || \
+				[ string match "/*.font" $path ] || \
+				[ string match "/*.js"   $path ] } {
+						
 				# Static content
 				set filename [ file tail [ file normalize $path ] ]
 				puts "|$filename|" 
@@ -59,7 +75,7 @@ proc on_data { sock msg } {
 					puts $sock $content
 				}
 			} else {
-				puts $sock "Nope. Nothing there.."
+				puts $sock "Nope. Nothing there.. $path "
 			}
 
 		} err ] } {
