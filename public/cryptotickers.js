@@ -210,7 +210,7 @@ function SimpleList() {
 				
 				if ( typeof sl_obj.total_usd != "undefined" ) {
 					str += "<div>";
-					str += this.sprintf( "<hr /><div class='curr_rate_holding_title'>You Own</div>", symbol );
+					str += this.sprintf( "<hr /><div class='curr_rate_holding_title'>You Own:  %s %s</div>", sl_obj.own, symbol );
 					str += this.sprintf( "<div class='curr_rate_holding' id='curr_rate_holding_usd_%s'>%s USD</div>", symbol, this.numberWithCommas( sl_obj.total_usd.toFixed(2) ) );
 					str += this.sprintf( "<div class='curr_rate_holding' id='curr_rate_holding_sgd_%s'>%s SGD</div>", symbol, this.numberWithCommas( sl_obj.total_sgd.toFixed(2) ) );
 					str += this.sprintf( "<div class='curr_rate_holding' id='curr_rate_holding_btc_%s'>%s BTC</div>", symbol, this.numberWithCommas( sl_obj.total_btc.toFixed(4) ) );
