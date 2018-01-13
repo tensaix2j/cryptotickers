@@ -18,15 +18,13 @@ proc on_data { sock msg } {
 		puts "PATH: $path"
 		puts "PROTOCOL: $protocol"
 
+
 		puts $sock "HTTP/1.0 200 OK"
 		
 		if { [ file extension $path ] == ".css" } {
-			puts $sock "Content-Type: text/css"
 		
-		} elseif { [ file extension $path ] == ".font" } {
-
-			puts $sock "Content-Type: application/font-woff"
-
+			puts $sock "Content-Type: text/css"
+			
 		} elseif { [ file extension $path ] == ".js" } {
 
 			puts $sock "Content-Type: application/javascript"
@@ -74,6 +72,7 @@ proc on_data { sock msg } {
 					close $fp 
 					puts $sock $content
 				}
+
 			} else {
 				puts $sock "Nope. Nothing there.. $path "
 			}
