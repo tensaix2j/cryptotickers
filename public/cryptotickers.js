@@ -151,10 +151,10 @@ function SimpleList() {
 			str += "<li id='li_profile'>";
 			str += "<div>";
 			str += this.sprintf( "<div class='profile_header'>%s</div>", this.profile_name );
-			str += this.sprintf( "<div class='curr_rate_holding'>Total USD: %s </div>", this.numberWithCommas( sl.total_usd.toFixed(2) ));
-			str += this.sprintf( "<div class='curr_rate_holding'>Total SGD: %s </div>", this.numberWithCommas( sl.total_sgd.toFixed(2) ));
-			str += this.sprintf( "<div class='curr_rate_holding'>Total BTC: %s </div>", this.numberWithCommas( sl.total_btc.toFixed(4) ));
-			str += this.sprintf( "<div class='curr_rate_holding'>Total ETH: %s </div>", this.numberWithCommas( sl.total_eth.toFixed(4) ));
+			str += this.sprintf( "<div class='curr_rate_holding'>Total USD: <br/>%s </div>", this.numberWithCommas( sl.total_usd.toFixed(2) ));
+			str += this.sprintf( "<div class='curr_rate_holding'>Total SGD: <br/>%s </div>", this.numberWithCommas( sl.total_sgd.toFixed(2) ));
+			str += this.sprintf( "<div class='curr_rate_holding'>Total BTC: <br/>%s </div>", this.numberWithCommas( sl.total_btc.toFixed(4) ));
+			str += this.sprintf( "<div class='curr_rate_holding'>Total ETH: <br/>%s </div>", this.numberWithCommas( sl.total_eth.toFixed(4) ));
 			str += "</div>";
 			str += "</li>";
 		}
